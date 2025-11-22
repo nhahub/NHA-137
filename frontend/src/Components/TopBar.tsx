@@ -1,5 +1,3 @@
-import React from 'react'
-import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock, faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import { faFacebookF, faTwitter, faInstagram, faGoogle } from "@fortawesome/free-brands-svg-icons";
@@ -29,7 +27,7 @@ function TopBar() {
         </div>
 
         {/* Right side with social media icons and language switcher */}
-        <div className="flex items-center gap-4 z-200">
+        <div className="flex items-center gap-4 z-40">
           <LanguageSwitcher />
           
           <a

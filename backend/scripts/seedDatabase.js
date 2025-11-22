@@ -3,24 +3,18 @@ const dotenv = require('dotenv');
 const bcrypt = require('bcryptjs');
 
 // Load environment variables
-dotenv.config({ path: './env.example' });
+// Note: Make sure your .env file has the correct MONGODB_URI
+dotenv.config({ path: './.env' }); 
 
-// Import models
 const User = require('../models/User');
 const Service = require('../models/Service');
-const Project = require('../models/Project');
 const Blog = require('../models/Blog');
-const Review = require('../models/Review');
 const Booking = require('../models/Booking');
 const Contact = require('../models/Contact');
 
-// Connect to database
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/autologic', {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    const conn = await mongoose.connect(process.env.MONGODB_URI);
     console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (error) {
     console.error('Database connection error:', error.message);
@@ -28,376 +22,247 @@ const connectDB = async () => {
   }
 };
 
-// Sample data with Arabic and English content
 const sampleData = {
   users: [
     {
-      name: 'Admin User',
+      firstName: 'Galal',
+      lastName: 'Al-Muslimani',
       email: 'admin@autologic.com',
+      phone: '1234567890',
       password: 'admin123456',
-      role: 'admin'
+      role: 'admin',
+      isActive: true
     },
     {
-      name: 'Ahmed Al-Rashid',
-      email: 'ahmed@example.com',
+      firstName: 'John',
+      lastName: 'Technician',
+      email: 'tech@autologic.com',
+      phone: '0987654321',
       password: 'user123456',
-      role: 'user'
+      role: 'technician',
+      isActive: true
     },
     {
-      name: 'Sarah Johnson',
+      firstName: 'Sarah',
+      lastName: 'Customer',
       email: 'sarah@example.com',
+      phone: '1122334455',
       password: 'user123456',
-      role: 'user'
+      role: 'user',
+      isActive: true
+    },
+    {
+      firstName: 'Mike',
+      lastName: 'Driver',
+      email: 'mike@example.com',
+      phone: '5544332211',
+      password: 'user123456',
+      role: 'user',
+      isActive: true
     }
   ],
 
   services: [
     {
-      name: 'Engine Repair',
-      nameAr: 'إصلاح المحرك',
-      description: 'Professional engine repair and maintenance services using the latest technology and equipment.',
-      descriptionAr: 'خدمات إصلاح وصيانة المحرك المهنية باستخدام أحدث التقنيات والمعدات.',
-      category: 'Engine',
-      categoryAr: 'المحرك',
-      price: 200,
-      priceAr: 'من 200 ريال',
-      duration: '2-4 hours',
-      durationAr: '2-4 ساعات',
+      name: 'Full Engine Diagnostics',
+      description: 'Complete computer diagnostics check to identify engine issues, sensor failures, and performance problems.',
+      category: 'Diagnostic',
+      price: 80,
+      duration: 60,
       isActive: true,
-      isFeatured: true,
-      images: [
-        {
-          url: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=500',
-          publicId: 'engine-repair-1',
-          alt: 'Engine Repair Service',
-          altAr: 'خدمة إصلاح المحرك'
-        }
-      ]
+      images: [{ url: 'https://images.unsplash.com/photo-1487754180477-0177ec5234eb?w=800', publicId: 'seed-1', alt: 'Diagnostics' }]
     },
     {
-      name: 'Transmission Service',
-      nameAr: 'خدمة ناقل الحركة',
-      description: 'Complete transmission service including repair, maintenance, and fluid changes.',
-      descriptionAr: 'خدمة ناقل الحركة الكاملة تشمل الإصلاح والصيانة وتغيير السوائل.',
-      category: 'Transmission',
-      categoryAr: 'ناقل الحركة',
-      price: 300,
-      priceAr: 'من 300 ريال',
-      duration: '3-5 hours',
-      durationAr: '3-5 ساعات',
+      name: 'Synthetic Oil Change',
+      description: 'Premium synthetic oil change including oil filter replacement and fluid top-up.',
+      category: 'Oil',
+      price: 60,
+      duration: 45,
       isActive: true,
-      isFeatured: true,
-      images: [
-        {
-          url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500',
-          publicId: 'transmission-1',
-          alt: 'Transmission Service',
-          altAr: 'خدمة ناقل الحركة'
-        }
-      ]
+      images: [{ url: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=800', publicId: 'seed-2', alt: 'Oil Change' }]
     },
     {
-      name: 'Brake System',
-      nameAr: 'نظام المكابح',
-      description: 'Complete brake system inspection, repair, and maintenance for your safety.',
-      descriptionAr: 'فحص وإصلاح وصيانة نظام المكابح الكامل لضمان سلامتك.',
+      name: 'Brake Pad Replacement',
+      description: 'Front or rear brake pad replacement with ceramic pads. Includes rotor inspection.',
       category: 'Brakes',
-      categoryAr: 'المكابح',
       price: 150,
-      priceAr: 'من 150 ريال',
-      duration: '1-2 hours',
-      durationAr: '1-2 ساعة',
+      duration: 90,
       isActive: true,
-      isFeatured: false,
-      images: [
-        {
-          url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500',
-          publicId: 'brakes-1',
-          alt: 'Brake System Service',
-          altAr: 'خدمة نظام المكابح'
-        }
-      ]
+      images: [{ url: 'https://images.unsplash.com/photo-1486006920555-c77dcf18193c?w=800', publicId: 'seed-3', alt: 'Brakes' }]
     },
     {
-      name: 'Tire Service',
-      nameAr: 'خدمة الإطارات',
-      description: 'Tire replacement, balancing, alignment, and pressure check services.',
-      descriptionAr: 'خدمات تغيير وموازنة ومحاذاة الإطارات وفحص الضغط.',
+      name: 'Tire Rotation & Balance',
+      description: 'Extend your tire life with professional rotation and computer balancing.',
       category: 'Tires',
-      categoryAr: 'الإطارات',
-      price: 100,
-      priceAr: 'من 100 ريال',
-      duration: '1 hour',
-      durationAr: 'ساعة واحدة',
+      price: 40,
+      duration: 45,
       isActive: true,
-      isFeatured: false,
-      images: [
-        {
-          url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500',
-          publicId: 'tires-1',
-          alt: 'Tire Service',
-          altAr: 'خدمة الإطارات'
-        }
-      ]
+      images: [{ url: 'https://images.unsplash.com/photo-1578844251758-2f71da645217?w=800', publicId: 'seed-4', alt: 'Tires' }]
     },
     {
-      name: 'Battery Service',
-      nameAr: 'خدمة البطارية',
-      description: 'Battery testing, replacement, and charging system maintenance.',
-      descriptionAr: 'فحص وتغيير البطارية وصيانة نظام الشحن.',
+      name: 'Battery Replacement',
+      description: 'Installation of a new premium battery with a 3-year warranty. Includes charging system check.',
       category: 'Electrical',
-      categoryAr: 'الكهرباء',
-      price: 250,
-      priceAr: 'من 250 ريال',
-      duration: '30 minutes',
-      durationAr: '30 دقيقة',
+      price: 120,
+      duration: 30,
       isActive: true,
-      isFeatured: false,
-      images: [
-        {
-          url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500',
-          publicId: 'battery-1',
-          alt: 'Battery Service',
-          altAr: 'خدمة البطارية'
-        }
-      ]
+      images: [{ url: 'https://images.unsplash.com/photo-1625718675738-7977c22e448d?w=800', publicId: 'seed-5', alt: 'Battery' }]
     },
     {
-      name: 'AC Service',
-      nameAr: 'خدمة التكييف',
-      description: 'Air conditioning system maintenance, repair, and gas refilling.',
-      descriptionAr: 'صيانة وإصلاح نظام تكييف الهواء وتعبئة الغاز.',
+      name: 'AC Recharge Service',
+      description: 'Refrigerant evacuation and recharge to keep your air conditioning ice cold.',
       category: 'AC',
-      categoryAr: 'التكييف',
-      price: 180,
-      priceAr: 'من 180 ريال',
-      duration: '2-3 hours',
-      durationAr: '2-3 ساعات',
+      price: 100,
+      duration: 60,
       isActive: true,
-      isFeatured: false,
-      images: [
-        {
-          url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500',
-          publicId: 'ac-1',
-          alt: 'AC Service',
-          altAr: 'خدمة التكييف'
-        }
-      ]
-    }
-  ],
-
-  projects: [
-    {
-      title: 'BMW Engine Overhaul',
-      titleAr: 'إصلاح شامل لمحرك BMW',
-      description: 'Complete engine overhaul for BMW 320i including piston replacement and timing belt change.',
-      descriptionAr: 'إصلاح شامل لمحرك BMW 320i يشمل تغيير المكابس وحزام التوقيت.',
-      service: null, // Will be set after services are created
-      images: [
-        {
-          url: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=500',
-          publicId: 'bmw-engine-1',
-          alt: 'BMW Engine Overhaul',
-          altAr: 'إصلاح شامل لمحرك BMW',
-          position: 0
-        },
-        {
-          url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500',
-          publicId: 'bmw-engine-2',
-          alt: 'BMW Engine Parts',
-          altAr: 'قطع محرك BMW',
-          position: 1
-        }
-      ],
-      isActive: true,
-      isFeatured: true
-    },
-    {
-      title: 'Mercedes Transmission Repair',
-      titleAr: 'إصلاح ناقل حركة مرسيدس',
-      description: 'Professional transmission repair for Mercedes C-Class with warranty.',
-      descriptionAr: 'إصلاح ناقل حركة مرسيدس C-Class مهني مع ضمان.',
-      service: null,
-      images: [
-        {
-          url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500',
-          publicId: 'mercedes-transmission-1',
-          alt: 'Mercedes Transmission',
-          altAr: 'ناقل حركة مرسيدس',
-          position: 0
-        }
-      ],
-      isActive: true,
-      isFeatured: true
+      images: [{ url: 'https://images.unsplash.com/photo-1504222490345-c075b6008014?w=800', publicId: 'seed-6', alt: 'AC' }]
     }
   ],
 
   blogs: [
     {
-      title: '10 Essential Car Maintenance Tips',
-      titleAr: '10 نصائح أساسية لصيانة السيارة',
-      content: 'Regular maintenance is crucial for keeping your car running smoothly and safely. Here are 10 essential tips every car owner should know...',
-      contentAr: 'الصيانة الدورية ضرورية للحفاظ على عمل السيارة بسلاسة وأمان. إليك 10 نصائح أساسية يجب أن يعرفها كل مالك سيارة...',
-      excerpt: 'Essential maintenance tips for car owners',
-      excerptAr: 'نصائح صيانة أساسية لأصحاب السيارات',
+      title: '5 Signs Your Brakes Need Replacing',
+      slug: '5-signs-brakes-need-replacing',
+      excerpt: 'Squeaking noises? Soft pedal? Learn the warning signs of worn brake pads.',
+      content: 'Brakes are the most critical safety feature of your car. Here are the top 5 signs they need attention: 1. Squealing or grinding noises. 2. Vibration when braking. 3. Taking longer to stop. 4. The brake light is on. 5. The car pulls to one side.',
       category: 'Maintenance',
-      categoryAr: 'الصيانة',
-      tags: ['maintenance', 'tips', 'car care'],
-      tagsAr: ['صيانة', 'نصائح', 'عناية بالسيارة'],
-      author: null, // Will be set after users are created
+      tags: ['brakes', 'safety', 'maintenance'],
       status: 'published',
       isPublic: true,
       isFeatured: true,
-      images: [
-        {
-          url: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=500',
-          publicId: 'maintenance-tips-1',
-          alt: 'Car Maintenance',
-          altAr: 'صيانة السيارة',
-          position: 0
-        }
-      ]
+      featuredImage: { url: 'https://images.unsplash.com/photo-1486006920555-c77dcf18193c?w=800', publicId: 'seed-blog-1', alt: 'Brakes' }
     },
     {
-      title: 'How to Choose the Right Car Service Center',
-      titleAr: 'كيفية اختيار مركز خدمة السيارات المناسب',
-      content: 'Choosing the right service center is important for your car\'s health and your peace of mind. Here\'s what to look for...',
-      contentAr: 'اختيار مركز الخدمة المناسب مهم لصحة سيارتك وراحة بالك. إليك ما يجب البحث عنه...',
-      excerpt: 'Guide to choosing a reliable service center',
-      excerptAr: 'دليل لاختيار مركز خدمة موثوق',
-      category: 'Guide',
-      categoryAr: 'دليل',
-      tags: ['service center', 'guide', 'choosing'],
-      tagsAr: ['مركز خدمة', 'دليل', 'اختيار'],
-      author: null,
+      title: 'How Often Should You Change Your Oil?',
+      slug: 'how-often-oil-change',
+      excerpt: 'Is the 3,000-mile rule still valid? We bust common oil change myths.',
+      content: 'Modern engines and synthetic oils have changed the rules. While the old rule was every 3,000 miles, most modern cars can go 5,000 to 7,500 miles between changes. Always check your owner\'s manual for the definitive answer.',
+      category: 'Tips',
+      tags: ['oil', 'engine', 'tips'],
+      status: 'published',
+      isPublic: true,
+      isFeatured: true,
+      featuredImage: { url: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=800', publicId: 'seed-blog-2', alt: 'Oil' }
+    },
+    {
+      title: 'Winter Car Care Guide',
+      slug: 'winter-car-care-guide',
+      excerpt: 'Prepare your vehicle for the cold months with this essential checklist.',
+      content: 'Winter can be tough on cars. Make sure to: 1. Check your battery. 2. Inspect tires (consider winter tires). 3. Check antifreeze levels. 4. Replace wiper blades. 5. Keep your gas tank at least half full.',
+      category: 'Guides',
+      tags: ['winter', 'safety', 'guide'],
       status: 'published',
       isPublic: true,
       isFeatured: false,
-      images: [
-        {
-          url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500',
-          publicId: 'service-center-1',
-          alt: 'Service Center',
-          altAr: 'مركز خدمة',
-          position: 0
-        }
-      ]
+      featuredImage: { url: 'https://images.unsplash.com/photo-1489824904134-891ab64532f1?w=800', publicId: 'seed-blog-3', alt: 'Winter' }
     }
   ],
 
-  reviews: [
+  contacts: [
     {
-      rating: 5,
-      comment: 'Excellent service! The team was professional and completed the work on time.',
-      commentAr: 'خدمة ممتازة! الفريق كان مهنياً وأنجز العمل في الوقت المحدد.',
-      user: null, // Will be set after users are created
-      service: null, // Will be set after services are created
-      isActive: true,
-      isFeatured: true
+      name: 'John Doe',
+      email: 'johndoe@test.com',
+      phone: '1234567890',
+      subject: 'Inquiry about tire pricing',
+      message: 'Hi, do you have Michelin tires for a 2020 Honda Civic?',
+      type: 'general',
+      status: 'new',
+      priority: 'medium'
     },
     {
-      rating: 4,
-      comment: 'Good service, reasonable prices. Would recommend to others.',
-      commentAr: 'خدمة جيدة، أسعار معقولة. أنصح الآخرين بها.',
-      user: null,
-      service: null,
-      isActive: true,
-      isFeatured: false
+      name: 'Jane Smith',
+      email: 'jane@test.com',
+      phone: '0987654321',
+      subject: 'Appointment Cancellation',
+      message: 'I need to cancel my appointment for tomorrow please.',
+      type: 'support',
+      status: 'resolved',
+      priority: 'high'
     }
   ]
 };
 
-// Seed database function
 const seedDatabase = async () => {
   try {
     console.log('🌱 Starting database seeding...');
 
-    // Clear existing data
+    // 1. Clear Data
     await User.deleteMany({});
     await Service.deleteMany({});
-    await Project.deleteMany({});
     await Blog.deleteMany({});
-    await Review.deleteMany({});
     await Booking.deleteMany({});
     await Contact.deleteMany({});
+    console.log('🗑️  Cleared existing data');
 
-    console.log('🗑️ Cleared existing data');
-
-    // Create users
+    // 2. Create Users
     const users = [];
     for (const userData of sampleData.users) {
       const user = new User(userData);
-      await user.save();
+      // Hash password manually since we might bypass pre-save if using insertMany,
+      // but here we use save() so the model hook will handle hashing.
+      await user.save(); 
       users.push(user);
-      console.log(`👤 Created user: ${user.name}`);
     }
+    console.log(`👤 Created ${users.length} users`);
 
-    // Create services
-    const services = [];
-    for (const serviceData of sampleData.services) {
-      const service = new Service(serviceData);
-      await service.save();
-      services.push(service);
-      console.log(`🔧 Created service: ${service.name}`);
-    }
+    // 3. Create Services
+    const services = await Service.insertMany(sampleData.services);
+    console.log(`🔧 Created ${services.length} services`);
 
-    // Create projects (link to services)
-    const projects = [];
-    for (let i = 0; i < sampleData.projects.length; i++) {
-      const projectData = { ...sampleData.projects[i] };
-      projectData.service = services[i % services.length]._id;
-      
-      const project = new Project(projectData);
-      await project.save();
-      projects.push(project);
-      console.log(`🚗 Created project: ${project.title}`);
-    }
+    // 4. Create Blogs (Assign to Admin)
+    const admin = users.find(u => u.role === 'admin');
+    const blogsData = sampleData.blogs.map(b => ({ ...b, author: admin._id }));
+    await Blog.insertMany(blogsData);
+    console.log(`📝 Created ${blogsData.length} blogs`);
 
-    // Create blogs (link to admin user)
-    const blogs = [];
-    const adminUser = users.find(u => u.role === 'admin');
-    for (const blogData of sampleData.blogs) {
-      const blog = new Blog({
-        ...blogData,
-        author: adminUser._id
-      });
-      await blog.save();
-      blogs.push(blog);
-      console.log(`📝 Created blog: ${blog.title}`);
-    }
+    // 5. Create Contacts
+    await Contact.insertMany(sampleData.contacts);
+    console.log(`gu Created ${sampleData.contacts.length} contacts`);
 
-    // Create reviews (link to users and services)
-    const reviews = [];
-    const regularUsers = users.filter(u => u.role === 'user');
-    for (let i = 0; i < sampleData.reviews.length; i++) {
-      const reviewData = { ...sampleData.reviews[i] };
-      reviewData.user = regularUsers[i % regularUsers.length]._id;
-      reviewData.service = services[i % services.length]._id;
-      
-      const review = new Review(reviewData);
-      await review.save();
-      reviews.push(review);
-      console.log(`⭐ Created review: ${review.comment.substring(0, 30)}...`);
-    }
+    // 6. Create Bookings (Randomly assign users to services)
+    const customer = users.find(u => u.email === 'sarah@example.com');
+    const technician = users.find(u => u.role === 'technician');
+    
+    // Booking 1: Pending
+    await Booking.create({
+      customer: customer._id,
+      service: services[0]._id, // Diagnostics
+      appointmentDate: new Date(Date.now() + 86400000), // Tomorrow
+      appointmentTime: '10:00',
+      status: 'pending',
+      estimatedCost: services[0].price,
+      car: { make: 'Toyota', model: 'Camry', year: 2019 },
+      issue: { description: 'Check engine light is on' }
+    });
 
+    // Booking 2: Confirmed (Assigned)
+    await Booking.create({
+      customer: customer._id,
+      service: services[1]._id, // Oil Change
+      appointmentDate: new Date(Date.now() + 172800000), // Day after tomorrow
+      appointmentTime: '14:00',
+      status: 'confirmed',
+      technician: technician._id,
+      estimatedCost: services[1].price,
+      car: { make: 'Honda', model: 'Civic', year: 2021 },
+      issue: { description: 'Regular maintenance' }
+    });
+
+    console.log(`📅 Created 2 sample bookings`);
     console.log('✅ Database seeding completed successfully!');
-    console.log(`📊 Created: ${users.length} users, ${services.length} services, ${projects.length} projects, ${blogs.length} blogs, ${reviews.length} reviews`);
 
   } catch (error) {
     console.error('❌ Error seeding database:', error);
   }
 };
 
-// Main execution
+// Run
 const main = async () => {
   await connectDB();
   await seedDatabase();
   process.exit(0);
 };
 
-// Run if called directly
 if (require.main === module) {
   main();
 }
-
-module.exports = { seedDatabase, sampleData };
