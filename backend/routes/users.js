@@ -52,7 +52,6 @@ router.get(
     if (isActive !== undefined) filter.isActive = isActive === "true";
 
     // 3. Add Search Logic
-    // If a search term exists, add an $or condition to search name/email/phone
     if (searchTerm) {
       filter.$or = [
         { firstName: { $regex: searchTerm, $options: "i" } },
@@ -163,11 +162,8 @@ router.put(
     if (phone) user.phone = phone;
     if (role) user.role = role;
     if (isActive !== undefined) user.isActive = isActive;
+    if (password) user.password = password;
 
-    // Update password
-    if (password) {
-      user.password = password;
-    }
     await user.save();
     user.password = undefined;
 

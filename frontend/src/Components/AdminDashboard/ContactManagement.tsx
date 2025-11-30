@@ -14,7 +14,6 @@ interface Contact {
   _id: string;
   name: string;
   email: string;
-  subject: string;
   message: string;
   status: "new" | "in-progress" | "resolved" | "closed";
   type: string;
@@ -55,7 +54,7 @@ const ContactManagement: React.FC = () => {
       setTotalPages(response.data.pages);
     } catch (error: any) {
       console.error(error);
-      toast.error("Failed to load messages");
+      toast.error(isRTL ? "فشل تحميل الرسائل" : "Failed to load messages");
     } finally {
       setLoading(false);
     }
@@ -67,10 +66,12 @@ const ContactManagement: React.FC = () => {
 
     try {
       await contactAPI.delete(id);
-      toast.success("Message deleted");
+      toast.success(
+        isRTL ? "تم حذف الرسالة بنجاح" : "Message deleted successfully"
+      );
       loadContacts();
     } catch (error) {
-      toast.error("Failed to delete message");
+      toast.error(isRTL ? "فشل حذف الرسالة" : "Failed to delete message");
     }
   };
 
@@ -127,8 +128,8 @@ const ContactManagement: React.FC = () => {
             key={contact._id}
             className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow"
           >
-            <div className="flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between">
-              {/* Sender & Subject */}
+            <div className="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
+              {/* Sender */}
               <div className="flex items-center gap-4 min-w-[250px] flex-1">
                 <div
                   className={`shrink-0 h-12 w-12 rounded-full flex items-center justify-center ${
@@ -140,9 +141,6 @@ const ContactManagement: React.FC = () => {
                   <FontAwesomeIcon icon={faEnvelopeOpen} className="text-lg" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    {contact.subject}
-                  </h3>
                   <p className="text-sm text-gray-600">
                     From: {contact.name} ({contact.email})
                   </p>
@@ -151,7 +149,9 @@ const ContactManagement: React.FC = () => {
 
               {/* Date */}
               <div className="text-sm text-gray-500">
-                {new Date(contact.createdAt).toLocaleDateString()}
+                {new Date(contact.createdAt).toLocaleDateString(
+                  isRTL ? "ar-EG" : "en-US"
+                )}
               </div>
 
               {/* Status & Actions */}
@@ -217,7 +217,7 @@ const ContactManagement: React.FC = () => {
 
       {contacts.length === 0 && !loading && (
         <div className="text-center py-12 text-gray-500">
-          No messages found.
+          {isRTL ? "لا توجد رسائل" : "No messages found"}
         </div>
       )}
 

@@ -45,7 +45,7 @@ const Footer: React.FC = () => {
         isRTL ? "rtl" : "ltr"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {/* First Column: About + Social media links */}
         <div>
           <h2 className="text-2xl font-bold text-white mb-3">AutoLogic</h2>
@@ -108,7 +108,7 @@ const Footer: React.FC = () => {
                   <img
                     src={imageUrl}
                     alt={post.title}
-                    className="w-23 h-17 w-16 h-12 object-cover rounded-md flex-shrink-0"
+                    className="w-23 h-17 object-cover rounded-md shrink-0"
                   />
                   <div>
                     <p className="text-sm font-medium group-hover:text-yellow-500 transition-colors line-clamp-2">
@@ -172,7 +172,6 @@ const Footer: React.FC = () => {
               services.map((service) => (
                 <li key={service._id}>
                   <NavLink
-                    // Navigate to Services page, ideally scroll to or filter (for now just link to page)
                     to="/services"
                     className="flex items-center gap-2 text-gray-300 hover:text-yellow-500 transition-colors duration-300 mb-2"
                   >

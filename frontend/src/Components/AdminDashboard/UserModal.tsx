@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes, faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { usersAPI } from "../../services/api";
+import { usersAPI } from "../../services/api"; //rem
 import toast from "react-hot-toast";
 
 interface UserModalProps {
@@ -41,7 +41,7 @@ const UserModal: React.FC<UserModalProps> = ({
           lastName: userToEdit.lastName,
           email: userToEdit.email,
           phone: userToEdit.phone || "",
-          password: "", // Don't fill password on edit for security
+          password: "",
           role: userToEdit.role,
           isActive: userToEdit.isActive,
         });
@@ -82,10 +82,10 @@ const UserModal: React.FC<UserModalProps> = ({
       }
 
       if (userToEdit) {
-        await usersAPI.update(userToEdit._id, dataToSend);
+        await usersAPI.update(userToEdit._id, dataToSend); //rem
         toast.success(t("modals.user.successUpdate"));
       } else {
-        await usersAPI.create(dataToSend);
+        await usersAPI.create(dataToSend); //rem
         toast.success(t("modals.user.successCreate"));
       }
 
@@ -93,7 +93,7 @@ const UserModal: React.FC<UserModalProps> = ({
       onClose();
     } catch (error: any) {
       console.error(error);
-      toast.error(error.response?.data?.message || "Failed to save user");
+      toast.error(error.response?.data?.message || isRTL ? "فشل حفظ المستخدم" : "Failed to save user");
     } finally {
       setLoading(false);
     }

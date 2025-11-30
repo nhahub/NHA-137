@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { NavLink } from "react-router-dom"; // <--- Added Import
+import { NavLink } from "react-router-dom";
 import aboutImage from "./kate-ibragimova-iFQpqbLMOFU-unsplash.jpg";
 
 function AboutHome() {
@@ -32,7 +32,6 @@ function AboutHome() {
             <p>{t("about.description")}</p>
           </div>
 
-          {/* Added Link to /about page */}
           <NavLink
             to="/about"
             className="inline-block bg-yellow-500 hover:bg-yellow-600 font-semibold px-6 py-3 rounded-md transition text-white"

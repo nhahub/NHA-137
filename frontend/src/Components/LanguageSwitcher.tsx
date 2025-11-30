@@ -8,11 +8,7 @@ const LanguageSwitcher: React.FC = () => {
 
   const toggleLanguage = () => {
     const newLang = i18n.language === "en" ? "ar" : "en";
-
-    // 1. Change language
     i18n.changeLanguage(newLang);
-
-    // 2. Force HTML direction update
     document.documentElement.dir = newLang === "ar" ? "rtl" : "ltr";
     document.documentElement.lang = newLang;
   };

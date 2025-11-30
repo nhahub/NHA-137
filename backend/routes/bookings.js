@@ -1,6 +1,6 @@
 const express = require("express");
 const { body, query } = require("express-validator");
-const { protect, authorize, checkOwnership } = require("../middleware/auth");
+const { protect, authorize } = require("../middleware/auth");
 const { catchAsync } = require("../middleware/errorHandler");
 const Booking = require("../models/Booking");
 const Service = require("../models/Service");
@@ -16,7 +16,8 @@ const bookingValidation = [
     .isISO8601()
     .withMessage("Valid appointment date is required"),
   body("appointmentTime")
-    .matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/)
+    .trim()
+    .notEmpty()
     .withMessage("Valid appointment time is required"),
   body("car.make").trim().notEmpty().withMessage("Car make is required"),
   body("car.model").trim().notEmpty().withMessage("Car model is required"),
@@ -55,6 +56,10 @@ router.get(
       "16:00",
       "17:00",
       "18:00",
+      "19:00",
+      "20:00",
+      "21:00",
+      "22:00",
     ];
 
     // Get booked slots for the date
@@ -335,8 +340,9 @@ router.put(
 
     if (!booking) {
       return next(new AppError("Booking not found", 404));
-    } // Check if user can cancel this booking
+    }
 
+    // Check if user can cancel this booking
     if (
       req.user.role !== "admin" &&
       booking.customer.toString() !== req.user._id.toString()
@@ -418,7 +424,7 @@ router.put(
 
     // Populate so the frontend gets the names back immediately
     await booking.populate("customer", "firstName lastName email phone");
-    await booking.populate("service", "name price");
+    await booking.populate("service", "name price duration");
 
     res.status(200).json({
       status: "success",

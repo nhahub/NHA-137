@@ -3,12 +3,11 @@
     "home": "Home",
     "about": "About Us",
     "services": "Services",
-    "projects": "Projects",
     "blog": "Blog",
     "contact": "Contact",
     "login": "Login",
     "register": "Register",
-    "pricing": "Pricing",
+    "logout": "Logout",
     "dashboard": "Dashboard",
     "appointment": "Make Appointment"
   },
@@ -65,6 +64,7 @@
     "emailRequired": "Email is required",
     "emailInvalid": "Please enter a valid email address",
     "phoneRequired": "Phone number is required",
+    "phoneInvalid": "Invalid phone number",
     "messageRequired": "Message is required"
   },
   "blog": {
@@ -94,7 +94,6 @@
     "email": "Email",
     "password": "Password",
     "login": "Login",
-    "forgot": "Forgot Password?",
     "noAccount": "Don't have an account?",
     "register": "Register"
   },
@@ -164,7 +163,9 @@
     "changePassBtn": "Change Password",
     "passMismatch": "Passwords do not match",
     "successUpdate": "Profile updated successfully",
-    "successPass": "Password changed successfully"
+    "failUpdate": "Failed to update profile",
+    "successPass": "Password changed successfully",
+    "failPass": "Failed to change password"
   },
   "footer": {
     "description": "Your trusted partner for reliable car maintenance and roadside assistance. We use original parts and expert technicians to ensure your safety and keep your vehicle running smoothly.",
@@ -276,7 +277,6 @@
     },
     "contact": {
       "title": "Message Details",
-      "subject": "Subject",
       "type": "Type",
       "message": "Message",
       "updateStatus": "Update Status",

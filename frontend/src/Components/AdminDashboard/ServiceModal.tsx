@@ -37,15 +37,15 @@ const ServiceModal: React.FC<ServiceModalProps> = ({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const categories = [
-    "engine",
-    "transmission",
-    "brakes",
-    "tires",
-    "electrical",
-    "ac",
-    "diagnostic",
-    "oil",
-    "other",
+    "Engine",
+    "Transmission",
+    "Brakes",
+    "Tires",
+    "Electrical",
+    "AC",
+    "Diagnostic",
+    "Oil",
+    "Other",
   ];
 
   // Reset or Populate form when opening
@@ -122,7 +122,11 @@ const ServiceModal: React.FC<ServiceModalProps> = ({
       onClose();
     } catch (error: any) {
       console.error(error);
-      toast.error(error.response?.data?.message || "Failed to save service");
+      toast.error(
+        error.response?.data?.message || isRTL
+          ? "فشل حفظ الخدمة"
+          : "Failed to save service"
+      );
     } finally {
       setLoading(false);
     }
@@ -208,8 +212,8 @@ const ServiceModal: React.FC<ServiceModalProps> = ({
               className="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent cursor-pointer"
             >
               {categories.map((cat) => (
-                <option key={cat} value={cat.charAt(0).toUpperCase() + cat.slice(1)}>
-                  {t(`modals.service.categories.${cat}`)}
+                <option key={cat} value={cat.toLocaleLowerCase()}>
+                  {t(`modals.service.categories.${cat.toLocaleLowerCase()}`)}
                 </option>
               ))}
             </select>

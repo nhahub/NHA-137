@@ -21,15 +21,15 @@ const serviceValidation = [
     .withMessage("Duration must be at least 1 hour"),
   body("category")
     .isIn([
-      "engine",
-      "transmission",
-      "brakes",
-      "tires",
-      "battery",
-      "diagnostic",
-      "oil",
-      "ac",
-      "other",
+      "Engine",
+      "Transmission",
+      "Brakes",
+      "Tires",
+      "Battery",
+      "Diagnostic",
+      "Oil",
+      "AC",
+      "Other",
     ])
     .withMessage("Invalid category"),
 ];
@@ -43,17 +43,16 @@ router.get(
     query("category")
       .optional()
       .isIn([
-        "engine",
-        "transmission",
-        "brakes",
-        "tires",
-        "battery",
-        "diagnostic",
-        "oil",
-        "ac",
-        "other",
+        "Engine",
+        "Transmission",
+        "Brakes",
+        "Tires",
+        "Battery",
+        "Diagnostic",
+        "Oil",
+        "AC",
+        "Other",
       ]),
-    query("featured").optional().isBoolean(),
     query("active").optional().isBoolean(),
     query("page").optional().isInt({ min: 1 }),
     query("limit").optional().isInt({ min: 1, max: 100 }),
@@ -230,7 +229,7 @@ router.get(
     const categoryList = await Promise.all(
       categories.map(async (category) => ({
         value: category,
-        label: category.charAt(0).toUpperCase() + category.slice(1),
+        label: category,
         count: await Service.countDocuments({ category, isActive: true }),
       }))
     );

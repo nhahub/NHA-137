@@ -49,7 +49,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
       const response = await usersAPI.getTechnicians();
       setTechnicians(response.data.data.technicians);
     } catch (error) {
-      console.error("Failed to load technicians");
+      console.error(isRTL ? "فشل تحميل الفنيين" : "Failed to load technicians");
     }
   };
 
@@ -65,7 +65,9 @@ const BookingModal: React.FC<BookingModalProps> = ({
     } catch (error: any) {
       console.error(error);
       toast.error(
-        error.response?.data?.message || "Failed to assign technician"
+        error.response?.data?.message || isRTL
+          ? "فشل تعيين الفني"
+          : "Failed to assign technician"
       );
     } finally {
       setLoading(false);
@@ -171,7 +173,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
             <h3 className="font-bold text-gray-800 mb-4">
               {t("modals.booking.assignTech")}
             </h3>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <select
                 value={selectedTechnician}
                 onChange={(e) => setSelectedTechnician(e.target.value)}
@@ -188,7 +190,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
               <button
                 onClick={handleAssign}
                 disabled={loading || !selectedTechnician}
-                className="bg-yellow-500 text-white px-6 py-2 rounded-lg hover:bg-yellow-600 disabled:opacity-50 flex items-center gap-2 cursor-pointer"
+                className="bg-yellow-500 text-white px-6 py-2 rounded-lg hover:bg-yellow-600 disabled:opacity-50 flex justify-center items-center gap-2 cursor-pointer"
               >
                 {loading && (
                   <FontAwesomeIcon icon={faSpinner} className="animate-spin" />

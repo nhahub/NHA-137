@@ -11,20 +11,17 @@ import {
   faToggleOn,
   faToggleOff,
 } from "@fortawesome/free-solid-svg-icons";
-// FIX: Use new API
 import { servicesAPI } from "../../services/api";
 import toast from "react-hot-toast";
 
 interface Service {
   _id: string;
   name: string;
-  // nameAr: string; // REMOVED
   description: string;
-  // descriptionAr: string; // REMOVED
   price: number;
+  duration: number;
   category: string;
   isActive: boolean;
-  // isPopular: boolean; // REMOVED
   images: any[];
   createdAt: string;
 }
@@ -47,12 +44,11 @@ const ServiceManagement: React.FC = () => {
   const loadServices = async () => {
     try {
       setLoading(true);
-      // FIX: Use servicesAPI.getAll
       const response = await servicesAPI.getAll({ limit: 50 });
       setServices(response.data.data.services);
     } catch (error: any) {
       console.error(error);
-      toast.error("Failed to load services");
+      toast.error(isRTL ? "فشل تحميل الخدمات" : "Failed to load services");
     } finally {
       setLoading(false);
     }
@@ -70,7 +66,6 @@ const ServiceManagement: React.FC = () => {
     }
 
     try {
-      // FIX: Use servicesAPI.delete
       await servicesAPI.delete(id);
       toast.success(
         isRTL ? "تم حذف الخدمة بنجاح" : "Service deleted successfully"
@@ -78,7 +73,7 @@ const ServiceManagement: React.FC = () => {
       loadServices();
     } catch (error: any) {
       console.error(error);
-      toast.error("Failed to delete service");
+      toast.error(isRTL ? "فشل حذف الخدمة" : "Failed to delete service");
     }
   };
 
@@ -87,17 +82,15 @@ const ServiceManagement: React.FC = () => {
       // We must use FormData because our API expects multipart/form-data for PUT requests
       const formData = new FormData();
 
-      // 1. Append the new status
+      // Append the new status
       formData.append("isActive", (!service.isActive).toString());
 
-      // 2. Append the REQUIRED fields to satisfy backend validation
+      // Append the REQUIRED fields to satisfy backend validation
       formData.append("name", service.name);
       formData.append("description", service.description);
       formData.append("price", service.price.toString());
-      formData.append("duration", "60"); // or service.duration if you have it (default to 60 to pass validation)
+      formData.append("duration", service.duration.toString());
       formData.append("category", service.category);
-
-      // Note: We don't need to re-send the image. The backend keeps the old one if no new file is sent.
 
       await servicesAPI.update(service._id, formData);
 
@@ -105,7 +98,9 @@ const ServiceManagement: React.FC = () => {
       loadServices();
     } catch (error: any) {
       console.error(error);
-      toast.error("Failed to update service status");
+      toast.error(
+        isRTL ? "فشل تحديث حالة الخدمة" : "Failed to update service status"
+      );
     }
   };
 
@@ -124,15 +119,15 @@ const ServiceManagement: React.FC = () => {
   });
 
   const categories = [
-    "engine",
-    "transmission",
-    "brakes",
-    "tires",
-    "electrical",
-    "ac",
-    "diagnostic",
-    "oil",
-    "other",
+    "Engine",
+    "Transmission",
+    "Brakes",
+    "Tires",
+    "Electrical",
+    "AC",
+    "Diagnostic",
+    "Oil",
+    "Other",
   ];
 
   if (loading) {
@@ -189,11 +184,8 @@ const ServiceManagement: React.FC = () => {
           >
             <option value="">{isRTL ? "جميع الفئات" : "All Categories"}</option>
             {categories.map((category) => (
-              <option
-                key={category}
-                value={category.charAt(0).toUpperCase() + category.slice(1)}
-              >
-                {t(`modals.service.categories.${category}`)}
+              <option key={category} value={category}>
+                {t(`modals.service.categories.${category.toLowerCase()}`)}
               </option>
             ))}
           </select>
@@ -211,7 +203,7 @@ const ServiceManagement: React.FC = () => {
       </div>
 
       {/* Services Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
         {filteredServices.map((service) => (
           <div
             key={service._id}
@@ -243,7 +235,9 @@ const ServiceManagement: React.FC = () => {
                   ${service.price}
                 </span>
                 <span className="text-sm text-gray-500">
-                  {service.category}
+                  {t(
+                    `modals.service.categories.${service.category.toLowerCase()}`
+                  )}
                 </span>
               </div>
 
@@ -305,7 +299,7 @@ const ServiceManagement: React.FC = () => {
       <ServiceModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
-        onSuccess={loadServices} // This reloads the list after saving
+        onSuccess={loadServices}
         serviceToEdit={editingService}
       />
     </div>

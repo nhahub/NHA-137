@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash, faCar } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-// Ensure this import points to your new api.js
 import { authAPI } from "../services/api";
 
 interface RegisterForm {
@@ -34,7 +33,6 @@ const Register: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // FIX: Made async to wait for API result
   const onSubmit = async (data: RegisterForm) => {
     try {
       setLoading(true);
@@ -47,16 +45,10 @@ const Register: React.FC = () => {
         isRTL ? "تم إنشاء الحساب بنجاح" : "Account created successfully"
       );
 
-      // Optional: Auto-login (Store token)
-      // localStorage.setItem('token', response.data.token);
-      // localStorage.setItem('user', JSON.stringify(response.data.data.user));
-      // navigate('/');
-
-      // OR: Redirect to Login (Safer/Cleaner)
+      // 3. Redirect to Login
       navigate("/login");
     } catch (error: any) {
       console.error("Error registering:", error);
-      // Show specific error from backend if available
       const msg = error.response?.data?.message || "Failed to register";
       toast.error(msg);
     } finally {

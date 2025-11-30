@@ -8,14 +8,13 @@ import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import hero1 from "./igor-constantino-aXxu0nVMGmk-unsplash.jpg";
 import hero2 from "./joseph-pillado-n99UTGfbvFQ-unsplash.jpg";
 import hero3 from "./kate-ibragimova-bEGTsOCnHro-unsplash.jpg";
-// FIX: Use new API
 import { contactAPI } from "../../services/api";
 
 interface ContactForm {
   name: string;
   email: string;
   phone: string;
-  message: string; // Removed Subject as it's not in this form design
+  message: string;
 }
 
 function Hero() {
@@ -24,7 +23,7 @@ function Hero() {
   const navigate = useNavigate();
   const images = [hero1, hero2, hero3];
   const [current, setCurrent] = useState(0);
-  const [loading, setLoading] = useState(false); // Added loading state
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -44,10 +43,7 @@ function Hero() {
   const onSubmit = async (data: ContactForm) => {
     try {
       setLoading(true);
-
-      // Call API
       await contactAPI.sendMessage(data);
-
       toast.success(
         isRTL ? "تم إرسال الرسالة بنجاح" : "Message sent successfully"
       );
@@ -112,7 +108,7 @@ function Hero() {
               <input
                 type="text"
                 {...register("name", {
-                  required: isRTL ? "الاسم مطلوب" : "Name is required",
+                  required: t("contact.nameRequired"),
                 })}
                 placeholder={t("contact.name")}
                 className={`border border-gray-300 p-3 rounded-md w-full focus:outline-none focus:border-yellow-500 ${
@@ -130,9 +126,11 @@ function Hero() {
               <input
                 type="email"
                 {...register("email", {
-                  required: isRTL
-                    ? "البريد الإلكترونى مطلوب"
-                    : "Email is required",
+                  required: t("contact.emailRequired"),
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: t("contact.emailInvalid"),
+                  },
                 })}
                 placeholder={t("contact.email")}
                 className={`border border-gray-300 p-3 rounded-md w-full focus:outline-none focus:border-yellow-500 ${
@@ -150,14 +148,10 @@ function Hero() {
               <input
                 type="tel"
                 {...register("phone", {
-                  required: isRTL
-                    ? "رقم الهاتف مطلوب"
-                    : "Phone number is required",
+                  required: t("contact.phoneRequired"),
                   pattern: {
                     value: /^[0-9+\-\s()]+$/,
-                    message: isRTL
-                      ? "رقم الهاتف غير صحيح"
-                      : "Invalid phone number",
+                    message: t("contact.phoneInvalid"),
                   },
                 })}
                 placeholder={t("contact.phone")}
@@ -175,9 +169,9 @@ function Hero() {
             <div>
               <textarea
                 {...register("message", {
-                  required: isRTL ? "الرسالة مطلوبة" : "Message is required",
+                  required: t("contact.messageRequired"),
                 })}
-                placeholder={t("contact.message", "Message")}
+                placeholder={t("contact.message")}
                 rows={3}
                 className={`border border-gray-300 p-3 rounded-md w-full focus:outline-none focus:border-yellow-500 resize-none ${
                   isRTL ? "text-right" : "text-left"

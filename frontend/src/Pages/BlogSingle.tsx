@@ -20,6 +20,8 @@ const BlogSingle: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
+  const [email, setEmail] = useState("");
+
   useEffect(() => {
     if (id) {
       fetchPost(id);
@@ -40,9 +42,21 @@ const BlogSingle: React.FC = () => {
     }
   };
 
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (email) {
+      toast.success(isRTL ? "تم الاشتراك بنجاح!" : "Successfully subscribed!");
+      setEmail("");
+    } else {
+      toast.error(
+        isRTL ? "يرجى إدخال بريد إلكتروني صحيح" : "Please enter a valid email"
+      );
+    }
+  };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString(isRTL ? "ar-SA" : "en-US", {
+    return date.toLocaleDateString(isRTL ? "ar-EG" : "en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -113,8 +127,12 @@ const BlogSingle: React.FC = () => {
                     alt={post.title}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute top-4 left-4 bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-medium capitalize">
-                    {post.category}
+                  <div
+                    className={`absolute top-4 ${
+                      isRTL ? "right-4" : "left-4"
+                    } bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-medium capitalize`}
+                  >
+                    {t(`blog.categories.${post.category.toLowerCase()}`)}
                   </div>
                 </div>
 
@@ -136,8 +154,6 @@ const BlogSingle: React.FC = () => {
                   </div>
 
                   {/* Article Content */}
-                  {/* Note: Since we don't have a rich text editor, we just display the text. 
-                      If you add one later, you can use dangerouslySetInnerHTML */}
                   <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed whitespace-pre-line">
                     {post.content}
                   </div>
@@ -173,18 +189,24 @@ const BlogSingle: React.FC = () => {
                 >
                   {t("blog.newsletterText")}
                 </p>
-                <div className="space-y-3">
+                <form onSubmit={handleNewsletterSubmit} className="space-y-3">
                   <input
                     type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder={t("blog.emailPlaceholder")}
                     className={`w-full px-4 py-2 rounded-lg text-slate-300 border-2 border-slate-300 focus:border-yellow-500 focus:outline-none ${
                       isRTL ? "text-right" : "text-left"
                     }`}
+                    required
                   />
-                  <button className="w-full bg-yellow-500 text-white py-2 rounded-lg font-medium hover:bg-yellow-600 transition-colors cursor-pointer">
+                  <button
+                    type="submit"
+                    className="w-full bg-yellow-500 text-white py-2 rounded-lg font-medium hover:bg-yellow-600 transition-colors cursor-pointer"
+                  >
                     {t("blog.subscribe")}
                   </button>
-                </div>
+                </form>
               </div>
             </div>
           </div>

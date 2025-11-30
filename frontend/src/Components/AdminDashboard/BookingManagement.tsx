@@ -8,10 +8,10 @@ import {
   faCalendar,
   faUser,
   faWrench,
-  faHardHat, // Icon for Technician
+  faHardHat,
 } from "@fortawesome/free-solid-svg-icons";
 import { bookingsAPI } from "../../services/api";
-import BookingModal from "./BookingModal"; // Import the new modal
+import BookingModal from "./BookingModal";
 import toast from "react-hot-toast";
 
 interface Booking {
@@ -29,13 +29,11 @@ interface Booking {
     price: number;
   };
   technician?: {
-    // Added technician field
     _id: string;
     firstName: string;
     lastName: string;
   };
   car: {
-    // Added car field for the modal
     make: string;
     model: string;
     year: number;
@@ -109,7 +107,7 @@ const BookingManagement: React.FC = () => {
       setTotalPages(response.data.pages);
     } catch (error: any) {
       console.error(error);
-      toast.error("Failed to load bookings");
+      toast.error(isRTL ? "فشل تحميل الحجوزات" : "Failed to load bookings");
     } finally {
       setLoading(false);
     }
@@ -124,10 +122,12 @@ const BookingManagement: React.FC = () => {
       toast.success(
         isRTL ? "تم تحديث حالة الحجز" : "Booking status updated successfully"
       );
-      loadBookings(); // Reload to reflect changes
+      loadBookings();
     } catch (error: any) {
       console.error(error);
-      toast.error("Failed to update booking status");
+      toast.error(
+        isRTL ? "فشل تحديث حالة الحجز" : "Failed to update booking status"
+      );
     }
   };
 
@@ -233,9 +233,9 @@ const BookingManagement: React.FC = () => {
       >
         {filteredBookings.map((booking) => (
           <div key={booking._id} className="bg-white rounded-lg shadow-lg p-6">
-            <div className="flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between">
+            <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center justify-between">
               {/* 1. Customer & Service */}
-              <div className="flex flex-col gap-1 min-w-[200px] flex-1">
+              <div className="flex flex-col gap-1 min-w-[200px]">
                 <div className="flex items-center gap-2 font-semibold text-slate-800">
                   <FontAwesomeIcon icon={faUser} className="text-blue-500" />
                   {booking.customer?.firstName} {booking.customer?.lastName}
@@ -251,62 +251,67 @@ const BookingManagement: React.FC = () => {
                   </div>
                 )}
               </div>
+              <div className="w-full flex justify-between">
+                {/* 2. Date & Cost */}
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-2 text-gray-700">
+                    <FontAwesomeIcon
+                      icon={faCalendar}
+                      className="text-gray-400"
+                    />
+                    {new Date(booking.appointmentDate).toLocaleDateString(
+                      isRTL ? "ar-EG" : "en-US"
+                    )}
+                  </div>
+                  <div className="text-sm text-gray-500 pl-6">
+                    {booking.appointmentTime}
+                  </div>
+                  <div className="text-sm font-bold text-yellow-600 pl-6">
+                    ${booking.estimatedCost}
+                  </div>
+                </div>
 
-              {/* 2. Date & Cost */}
-              <div className="flex flex-col gap-1 min-w-[150px]">
-                <div className="flex items-center gap-2 text-gray-700">
-                  <FontAwesomeIcon
-                    icon={faCalendar}
-                    className="text-gray-400"
-                  />
-                  {new Date(booking.appointmentDate).toLocaleDateString()}
-                </div>
-                <div className="text-sm text-gray-500 pl-6">
-                  {booking.appointmentTime}
-                </div>
-                <div className="text-sm font-bold text-yellow-600 pl-6">
-                  ${booking.estimatedCost}
-                </div>
-              </div>
+                {/* 3. Status & Actions */}
+                <div className="flex flex-col items-start gap-3 min-w-35">
+                  <div className="flex items-center gap-2">
+                    {/* Manage Button */}
+                    <button
+                      onClick={() => {
+                        setSelectedBooking(booking);
+                        setShowModal(true);
+                      }}
+                      className="text-blue-600 hover:text-blue-800 bg-blue-50 size-7.5 rounded-full hover:bg-blue-100 transition-colors cursor-pointer"
+                      title={isRTL ? "إدارة الحجز" : "Manage Booking"}
+                    >
+                      <FontAwesomeIcon icon={faEdit} />{" "}
+                    </button>
 
-              {/* 3. Status & Actions */}
-              <div className="flex flex-col items-start gap-3 min-w-35">
-                <div className="flex items-center gap-2">
-                  {/* Manage Button */}
-                  <button
-                    onClick={() => {
-                      setSelectedBooking(booking);
-                      setShowModal(true);
-                    }}
-                    className="text-blue-600 hover:text-blue-800 bg-blue-50 size-7.5 rounded-full hover:bg-blue-100 transition-colors cursor-pointer"
-                    title={isRTL ? "إدارة الحجز" : "Manage Booking"}
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
+                        booking.status
+                      )}`}
+                    >
+                      {getStatusText(booking.status)}
+                    </span>
+                  </div>
+
+                  <select
+                    value={booking.status}
+                    onChange={(e) =>
+                      handleUpdateBookingStatus(booking._id, e.target.value)
+                    }
+                    className="w-full text-sm border border-gray-300 rounded-md px-2 py-1 bg-white focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer"
                   >
-                    <FontAwesomeIcon icon={faEdit} />{" "}
-                  </button>
-
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
-                      booking.status
-                    )}`}
-                  >
-                    {getStatusText(booking.status)}
-                  </span>
+                    <option value="pending">{t("status.pending")}</option>
+                    <option value="confirmed">{t("status.confirmed")}</option>
+                    <option value="in-progress">
+                      {t("status.in-progress")}
+                    </option>
+                    <option value="completed">{t("status.completed")}</option>
+                    <option value="cancelled">{t("status.cancelled")}</option>
+                    <option value="no-show">{t("status.no-show")}</option>
+                  </select>
                 </div>
-
-                <select
-                  value={booking.status}
-                  onChange={(e) =>
-                    handleUpdateBookingStatus(booking._id, e.target.value)
-                  }
-                  className="w-full text-sm border border-gray-300 rounded-md px-2 py-1 bg-white focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer"
-                >
-                  <option value="pending">{t("status.pending")}</option>
-                  <option value="confirmed">{t("status.confirmed")}</option>
-                  <option value="in-progress">{t("status.in-progress")}</option>
-                  <option value="completed">{t("status.completed")}</option>
-                  <option value="cancelled">{t("status.cancelled")}</option>
-                  <option value="no-show">{t("status.no-show")}</option>
-                </select>
               </div>
             </div>
           </div>
@@ -352,7 +357,7 @@ const BookingManagement: React.FC = () => {
       <BookingModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
-        onSuccess={loadBookings} // Reloads list after assigning technician
+        onSuccess={loadBookings}
         booking={selectedBooking}
       />
     </div>

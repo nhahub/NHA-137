@@ -45,14 +45,6 @@ router.post(
 
     const contact = await Contact.create(contactData);
 
-    // Send notification email to admin
-    // try {
-    //   await sendContactNotificationEmail(contact);
-    // } catch (error) {
-    //   console.error('Failed to send contact notification email:', error);
-    //   // Don't fail contact submission if email fails
-    // }
-
     res.status(201).json({
       status: "success",
       message: "Contact form submitted successfully",

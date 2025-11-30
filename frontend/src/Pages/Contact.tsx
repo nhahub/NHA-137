@@ -34,11 +34,10 @@ const Contact: React.FC = () => {
   const onSubmit = async (data: ContactForm) => {
     try {
       setLoading(true);
-
-      // Call the new API
       await contactAPI.sendMessage(data);
-
-      toast.success(t("common.success") || "Message sent successfully");
+      toast.success(
+        isRTL ? "تم إرسال الرسالة بنجاح" : "Message sent successfully"
+      );
       reset();
     } catch (error: any) {
       console.error("Error sending message:", error);
@@ -75,7 +74,7 @@ const Contact: React.FC = () => {
   return (
     <div className={`min-h-screen bg-gray-50 ${isRTL ? "rtl" : "ltr"}`}>
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-slate-900 to-slate-800 text-white py-20">
+      <div className="bg-linear-to-r from-slate-900 to-slate-800 text-white py-20">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
@@ -108,12 +107,12 @@ const Contact: React.FC = () => {
                   <input
                     type="text"
                     {...register("name", {
-                      required: t("contact.nameRequired") || "Name is required",
+                      required: t("contact.nameRequired"),
                     })}
                     className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent ${
                       isRTL ? "text-right" : "text-left"
                     }`}
-                    placeholder={t("contact.name") || "Name"}
+                    placeholder={t("contact.name")}
                   />
                   {errors.name && (
                     <p className="text-red-500 text-sm mt-1">
@@ -129,17 +128,16 @@ const Contact: React.FC = () => {
                   <input
                     type="email"
                     {...register("email", {
-                      required:
-                        t("contact.emailRequired") || "Email is required",
+                      required: t("contact.emailRequired"),
                       pattern: {
                         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                        message: t("contact.emailInvalid") || "Invalid email",
+                        message: t("contact.emailInvalid"),
                       },
                     })}
                     className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent ${
                       isRTL ? "text-right" : "text-left"
                     }`}
-                    placeholder={t("contact.email") || "Email"}
+                    placeholder={t("contact.email")}
                   />
                   {errors.email && (
                     <p className="text-red-500 text-sm mt-1">
@@ -155,13 +153,16 @@ const Contact: React.FC = () => {
                   <input
                     type="tel"
                     {...register("phone", {
-                      required:
-                        t("contact.phoneRequired") || "Phone is required",
+                      required: t("contact.phoneRequired"),
+                      pattern: {
+                        value: /^[0-9+\-\s()]+$/,
+                        message: t("contact.phoneInvalid"),
+                      },
                     })}
                     className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent ${
                       isRTL ? "text-right" : "text-left"
                     }`}
-                    placeholder={t("contact.phone") || "Phone"}
+                    placeholder={t("contact.phone")}
                   />
                   {errors.phone && (
                     <p className="text-red-500 text-sm mt-1">
@@ -176,14 +177,13 @@ const Contact: React.FC = () => {
                   </label>
                   <textarea
                     {...register("message", {
-                      required:
-                        t("contact.messageRequired") || "Message is required",
+                      required: t("contact.messageRequired"),
                     })}
                     rows={5}
                     className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent ${
                       isRTL ? "text-right" : "text-left"
                     }`}
-                    placeholder={t("contact.message") || "Message"}
+                    placeholder={t("contact.message")}
                   />
                   {errors.message && (
                     <p className="text-red-500 text-sm mt-1">
@@ -221,7 +221,7 @@ const Contact: React.FC = () => {
                 <div className="space-y-6">
                   {contactInfo.map((info, index) => (
                     <div key={index} className="flex items-start gap-4">
-                      <div className="bg-yellow-500 w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0">
+                      <div className="bg-yellow-500 w-12 h-12 rounded-full flex items-center justify-center shrink-0">
                         <FontAwesomeIcon
                           icon={info.icon}
                           className="text-white"

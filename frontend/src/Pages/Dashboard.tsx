@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import AdminDashboard from '../Components/AdminDashboard/AdminDashboard';
-import UserDashboard from '../Components/UserDashboard/UserDashboard';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import AdminDashboard from "../Components/AdminDashboard/AdminDashboard";
+import UserDashboard from "../Components/UserDashboard/UserDashboard";
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -9,13 +9,11 @@ const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 1. Get User Data
-    const userJson = localStorage.getItem('user');
-    const token = localStorage.getItem('token');
+    const userJson = localStorage.getItem("user");
+    const token = localStorage.getItem("token");
 
-    // 2. Safety Check: If no data, kick them out
     if (!userJson || !token) {
-      navigate('/login');
+      navigate("/login");
       return;
     }
 
@@ -24,19 +22,23 @@ const Dashboard: React.FC = () => {
       setRole(user.role);
     } catch (error) {
       console.error("Error parsing user data", error);
-      localStorage.clear(); // Clear bad data
-      navigate('/login');
+      localStorage.clear();
+      navigate("/login");
     } finally {
       setLoading(false);
     }
   }, [navigate]);
 
   if (loading) {
-    return null; // Or a simple loading spinner
+    return (
+      <div className="flex justify-center items-center py-20">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500"></div>
+      </div>
+    );
   }
 
-  // 3. The Logic Switch
-  if (role === 'admin') {
+  // The Logic Switch
+  if (role === "admin") {
     return <AdminDashboard />;
   } else {
     // Users and Technicians go here

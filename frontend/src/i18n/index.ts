@@ -20,7 +20,6 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    // lng: ... <-- REMOVED (Let the detector handle it)
     fallbackLng: "en",
     debug: false,
 

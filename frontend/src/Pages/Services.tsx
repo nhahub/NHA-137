@@ -30,7 +30,7 @@ const Services: React.FC = () => {
   const fetchServices = async () => {
     try {
       setLoading(true);
-      const response = await servicesAPI.getAll({ limit: 100, active: true }); // Fetch all active services
+      const response = await servicesAPI.getAll({ limit: 100, active: true });
       setServices(response.data.data.services);
     } catch (error) {
       console.error("Error fetching services:", error);

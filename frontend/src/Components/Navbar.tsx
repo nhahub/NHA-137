@@ -16,7 +16,8 @@ import { useTranslation } from "react-i18next";
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === "ar";
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -35,7 +36,7 @@ function Navbar() {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 768) setMenuOpen(false);
+      if (window.innerWidth >= 1024) setMenuOpen(false);
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -60,7 +61,7 @@ function Navbar() {
       <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
         {/* Mobile Menu Button */}
         <div
-          className="md:hidden text-2xl text-slate-700 cursor-pointer"
+          className="lg:hidden text-2xl text-slate-700 cursor-pointer"
           onClick={() => setMenuOpen(!menuOpen)}
         >
           <FontAwesomeIcon icon={menuOpen ? faTimes : faBars} />
@@ -78,10 +79,10 @@ function Navbar() {
         </NavLink>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden lg:flex items-center gap-4">
           {/* 1. MAIN LINKS - HIDE IF ADMIN */}
           {!isAdmin && (
-            <ul className="flex gap-6 text-slate-700 font-medium list-none">
+            <ul className="flex gap-5 text-slate-700 font-medium list-none">
               <li>
                 <NavLink
                   to="/"
@@ -91,7 +92,7 @@ function Navbar() {
                     }`
                   }
                 >
-                  {t("nav.home", "Home")}
+                  {t("nav.home")}
                 </NavLink>
               </li>
               <li>
@@ -103,7 +104,7 @@ function Navbar() {
                     }`
                   }
                 >
-                  {t("nav.about", "About")}
+                  {t("nav.about")}
                 </NavLink>
               </li>
               <li>
@@ -115,7 +116,7 @@ function Navbar() {
                     }`
                   }
                 >
-                  {t("nav.services", "Services")}
+                  {t("nav.services")}
                 </NavLink>
               </li>
               <li>
@@ -127,7 +128,7 @@ function Navbar() {
                     }`
                   }
                 >
-                  {t("nav.blog", "Blog")}
+                  {t("nav.blog")}
                 </NavLink>
               </li>
               <li>
@@ -139,7 +140,7 @@ function Navbar() {
                     }`
                   }
                 >
-                  {t("nav.contact", "Contact")}
+                  {t("nav.contact")}
                 </NavLink>
               </li>
             </ul>
@@ -162,7 +163,7 @@ function Navbar() {
                 }
               >
                 <FontAwesomeIcon icon={faCalendarCheck} />
-                <span>{t("nav.appointment", "Book Now")}</span>
+                <span>{t("nav.appointment")}</span>
               </NavLink>
             )}
 
@@ -175,9 +176,7 @@ function Navbar() {
                   title="Dashboard"
                 >
                   <FontAwesomeIcon icon={faTachometerAlt} />
-                  <span className="hidden lg:inline">
-                    {t("nav.dashboard", "Dashboard")}
-                  </span>
+                  <span>{t("nav.dashboard")}</span>
                 </NavLink>
                 <button
                   onClick={handleLogout}
@@ -201,7 +200,7 @@ function Navbar() {
                   }
                 >
                   <FontAwesomeIcon icon={faUser} />
-                  <span>{t("nav.login", "Login")}</span>
+                  <span>{t("nav.login")}</span>
                 </NavLink>
                 <span className="text-gray-300">|</span>
                 <NavLink
@@ -215,7 +214,7 @@ function Navbar() {
                   }
                 >
                   <FontAwesomeIcon icon={faUserPlus} />
-                  <span>{t("nav.register", "Register")}</span>
+                  <span>{t("nav.register")}</span>
                 </NavLink>
               </div>
             )}
@@ -234,7 +233,9 @@ function Navbar() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center mb-4 border-b pb-4">
-              <h2 className="text-xl font-bold text-slate-800">Menu</h2>
+              <h2 className="text-xl font-bold text-slate-800">
+                {isRTL ? "القائمة" : "Menu"}
+              </h2>
               <button
                 onClick={() => setMenuOpen(false)}
                 className="text-gray-500 cursor-pointer"
@@ -255,7 +256,7 @@ function Navbar() {
                     }`
                   }
                 >
-                  {t("nav.home", "Home")}
+                  {t("nav.home")}
                 </NavLink>
                 <NavLink
                   to="/about"
@@ -266,7 +267,7 @@ function Navbar() {
                     }`
                   }
                 >
-                  {t("nav.about", "About")}
+                  {t("nav.about")}
                 </NavLink>
                 <NavLink
                   to="/services"
@@ -277,7 +278,7 @@ function Navbar() {
                     }`
                   }
                 >
-                  {t("nav.services", "Services")}
+                  {t("nav.services")}
                 </NavLink>
                 <NavLink
                   to="/blog"
@@ -288,7 +289,7 @@ function Navbar() {
                     }`
                   }
                 >
-                  {t("nav.blog", "Blog")}
+                  {t("nav.blog")}
                 </NavLink>
                 <NavLink
                   to="/contact"
@@ -299,7 +300,7 @@ function Navbar() {
                     }`
                   }
                 >
-                  {t("nav.contact", "Contact")}
+                  {t("nav.contact")}
                 </NavLink>
 
                 <div className="h-px bg-gray-100 my-2"></div>
@@ -310,7 +311,7 @@ function Navbar() {
                   onClick={() => setMenuOpen(false)}
                   className="bg-yellow-500 text-white text-center py-3 rounded-lg hover:bg-yellow-600"
                 >
-                  {t("nav.appointment", "Book Appointment")}
+                  {t("nav.appointment")}
                 </NavLink>
               </>
             )}
@@ -318,7 +319,8 @@ function Navbar() {
             {user ? (
               <div className="flex flex-col gap-4 mt-4">
                 <div className="text-sm text-gray-500">
-                  Logged in as {user.firstName} {isAdmin && "(Admin)"}
+                  {isRTL ? "تم تسجيل الدخول ك" : "Logged in as"}{" "}
+                  {user.firstName} {isAdmin && `(${t("role.admin")})`}
                 </div>
                 <NavLink
                   to="/dashboard"
@@ -326,7 +328,7 @@ function Navbar() {
                   className="text-yellow-600 font-bold flex items-center gap-2"
                 >
                   <FontAwesomeIcon icon={faTachometerAlt} />{" "}
-                  {t("nav.dashboard", "Dashboard")}
+                  {t("nav.dashboard")}
                 </NavLink>
                 <button
                   onClick={() => {
@@ -335,8 +337,7 @@ function Navbar() {
                   }}
                   className="text-red-500 text-left flex items-center gap-2 cursor-pointer"
                 >
-                  <FontAwesomeIcon icon={faSignOutAlt} />{" "}
-                  {t("nav.logout", "Logout")}
+                  <FontAwesomeIcon icon={faSignOutAlt} /> {t("nav.logout")}
                 </button>
               </div>
             ) : (
@@ -346,14 +347,14 @@ function Navbar() {
                   onClick={() => setMenuOpen(false)}
                   className="text-center py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
                 >
-                  {t("nav.login", "Login")}
+                  {t("nav.login")}
                 </NavLink>
                 <NavLink
                   to="/register"
                   onClick={() => setMenuOpen(false)}
                   className="text-center py-2 border border-yellow-500 text-yellow-600 rounded-lg hover:bg-yellow-50"
                 >
-                  {t("nav.register", "Register")}
+                  {t("nav.register")}
                 </NavLink>
               </div>
             )}

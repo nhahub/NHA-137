@@ -1,15 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { NavLink, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faEye,
-  faEyeSlash,
-  faCar,
-} from "@fortawesome/free-solid-svg-icons";
+import { faEye, faEyeSlash, faCar } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-// Ensure this import points to your new api.js
 import { authAPI } from "../services/api";
 
 interface LoginForm {
@@ -29,6 +24,12 @@ const Login: React.FC = () => {
 
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      navigate("/dashboard");
+    }
+  }, []);
 
   const onSubmit = async (data: LoginForm) => {
     try {
@@ -171,9 +172,6 @@ const Login: React.FC = () => {
                     {isRTL ? "تذكرني" : "Remember me"}
                   </label>
                 </div>
-
-                {/* Removed Forgot Password link as we removed that feature */}
-                {/* <div className="text-sm">...</div> */}
               </div>
 
               <button
@@ -184,10 +182,6 @@ const Login: React.FC = () => {
                 {t("login.login")}
               </button>
             </form>
-
-            <div className="mt-6">
-              {/* ... Social Login placeholders removed for simplicity ... */}
-            </div>
 
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">

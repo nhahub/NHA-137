@@ -50,12 +50,9 @@ const MakeAppointment: React.FC = () => {
     formState: { errors },
   } = useForm<AppointmentForm>();
 
-  // 1. FIX: Run ONCE on mount
   useEffect(() => {
     const checkAuthAndLoad = async () => {
-      const userJson = localStorage.getItem("user");
-
-      if (!userJson) {
+      if (!user) {
         toast.error("Please login to make an appointment");
         navigate("/login");
         return;
@@ -68,7 +65,7 @@ const MakeAppointment: React.FC = () => {
     checkAuthAndLoad();
   }, []);
 
-  // 2. Fetch Services
+  // Fetch Services
   const loadServices = async () => {
     try {
       const response = await servicesAPI.getAll({ limit: 100 });
@@ -114,7 +111,7 @@ const MakeAppointment: React.FC = () => {
 
   const onSubmit = async (data: AppointmentForm) => {
     if (!selectedDate) {
-      toast.error(t("appointment.selectDateFirst")); // Using translation
+      toast.error(t("appointment.selectDateFirst"));
       return;
     }
 
@@ -138,7 +135,9 @@ const MakeAppointment: React.FC = () => {
 
       await bookingsAPI.create(payload);
 
-      toast.success(t("common.success") || "Appointment booked successfully");
+      toast.success(
+        isRTL ? "تم حجز الموعد بنجاح" : "Appointment booked successfully"
+      );
       navigate("/dashboard");
     } catch (error: any) {
       console.error(error);
@@ -152,7 +151,7 @@ const MakeAppointment: React.FC = () => {
   return (
     <div className={`min-h-screen bg-gray-50 ${isRTL ? "rtl" : "ltr"}`}>
       {/* Hero Section */}
-      <div className="bg-gradient-to-r from-slate-900 to-slate-800 text-white py-20">
+      <div className="bg-linear-to-r from-slate-900 to-slate-800 text-white py-20">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
@@ -188,9 +187,7 @@ const MakeAppointment: React.FC = () => {
                     </label>
                     <select
                       {...register("service", {
-                        required:
-                          t("appointment.selectServiceError") ||
-                          "Please select a service",
+                        required: t("appointment.selectServiceError"),
                       })}
                       className={`w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent ${
                         isRTL ? "text-right" : "text-left"
@@ -434,40 +431,30 @@ const MakeAppointment: React.FC = () => {
                   {t("appointment.shopContact")}
                 </h3>
                 <div className="space-y-3">
-                  <div
-                    className={`flex items-center gap-3 ${
-                      isRTL ? "flex-row-reverse" : ""
-                    }`}
-                  >
+                  <div className="flex items-center gap-3">
                     <FontAwesomeIcon
                       icon={faPhone}
                       className="text-yellow-500"
                     />
-                    <span className="text-gray-700">{t("contact.phoneNumber")}</span>
+                    <span className="text-gray-700">
+                      {t("contact.phoneNumber")}
+                    </span>
                   </div>
-                  <div
-                    className={`flex items-center gap-3 ${
-                      isRTL ? "flex-row-reverse" : ""
-                    }`}
-                  >
+                  <div className="flex items-center gap-3">
                     <FontAwesomeIcon
                       icon={faEnvelope}
                       className="text-yellow-500"
                     />
-                    <span className="text-gray-700">{t("contact.emailAddress")}</span>
+                    <span className="text-gray-700">
+                      {t("contact.emailAddress")}
+                    </span>
                   </div>
-                  <div
-                    className={`flex items-center gap-3 ${
-                      isRTL ? "flex-row-reverse" : ""
-                    }`}
-                  >
+                  <div className="flex items-center gap-3">
                     <FontAwesomeIcon
                       icon={faClock}
                       className="text-yellow-500"
                     />
-                    <span className="text-gray-700">
-                      {t("topbar.hours")}
-                    </span>
+                    <span className="text-gray-700">{t("topbar.hours")}</span>
                   </div>
                 </div>
               </div>

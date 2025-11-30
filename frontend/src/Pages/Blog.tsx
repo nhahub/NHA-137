@@ -21,7 +21,7 @@ const Blog: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState("All");
   const [email, setEmail] = useState("");
 
-  // Categories matching your Model
+  // Blogs Categories
   const categories = [
     "All",
     "Maintenance",
@@ -70,7 +70,7 @@ const Blog: React.FC = () => {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString(isRTL ? "ar-SA" : "en-US", {
+    return date.toLocaleDateString(isRTL ? "ar-EG" : "en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -158,8 +158,12 @@ const Blog: React.FC = () => {
                         alt={blog.title}
                         className="w-full h-full object-cover"
                       />
-                      <div className="absolute top-4 left-4 bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-medium capitalize">
-                        {blog.category}
+                      <div
+                        className={`absolute top-4 ${
+                          isRTL ? "right-4" : "left-4"
+                        } bg-yellow-500 text-white px-3 py-1 rounded-full text-sm font-medium capitalize`}
+                      >
+                        {t(`blog.categories.${blog.category.toLowerCase()}`)}
                       </div>
                     </div>
 
@@ -184,7 +188,7 @@ const Blog: React.FC = () => {
                       </div>
 
                       <NavLink
-                        to={`/blog/${blog._id}`} // Or /blog/slug/blog.slug if you prefer
+                        to={`/blog/${blog._id}`}
                         className="inline-flex items-center gap-2 text-yellow-600 hover:text-yellow-700 font-medium mt-auto"
                       >
                         {isRTL ? "اقرأ المزيد" : "Read More"}
@@ -221,7 +225,7 @@ const Blog: React.FC = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder={isRTL ? "أدخل بريدك الإلكتروني" : "Enter your email"}
+              placeholder={t("blog.emailPlaceholder")}
               className="flex-1 px-4 py-3 rounded-lg text-slate-300 ring-2 focus:ring-yellow-500 focus:outline-none"
               required
             />
@@ -229,7 +233,7 @@ const Blog: React.FC = () => {
               type="submit"
               className="bg-yellow-500 text-white px-8 py-3 rounded-lg font-medium hover:bg-yellow-600 transition-colors cursor-pointer"
             >
-              {isRTL ? "اشترك" : "Subscribe"}
+              {t("blog.subscribe")}
             </button>
           </form>
         </div>

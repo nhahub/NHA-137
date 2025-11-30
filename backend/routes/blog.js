@@ -15,13 +15,13 @@ const blogValidation = [
   body("content").trim().notEmpty().withMessage("Blog content is required"),
   body("category")
     .isIn([
-      "maintenance",
-      "repair",
-      "tips",
-      "news",
-      "reviews",
-      "guides",
-      "other",
+      "Maintenance",
+      "Repair",
+      "Tips",
+      "News",
+      "Reviews",
+      "Guides",
+      "Other",
     ])
     .withMessage("Invalid category"),
 ];
@@ -35,13 +35,13 @@ router.get(
     query("category")
       .optional()
       .isIn([
-        "maintenance",
-        "repair",
-        "tips",
-        "news",
-        "reviews",
-        "guides",
-        "other",
+        "Maintenance",
+        "Repair",
+        "Tips",
+        "News",
+        "Reviews",
+        "Guides",
+        "Other",
       ]),
     query("featured").optional().isBoolean(),
     query("tag").optional().trim(),
@@ -313,7 +313,7 @@ router.get(
     const categoryList = await Promise.all(
       categories.map(async (category) => ({
         value: category,
-        label: category.charAt(0).toUpperCase() + category.slice(1),
+        label: category,
         count: await Blog.countDocuments({
           category,
           status: "published",

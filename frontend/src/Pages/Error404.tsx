@@ -1,15 +1,19 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { NavLink } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { NavLink } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHome, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 const Error404: React.FC = () => {
   const { t, i18n } = useTranslation();
-  const isRTL = i18n.language === 'ar';
+  const isRTL = i18n.language === "ar";
 
   return (
-    <div className={`min-h-screen bg-gray-50 flex items-center justify-center ${isRTL ? 'rtl' : 'ltr'}`}>
+    <div
+      className={`min-h-screen bg-gray-50 flex items-center justify-center ${
+        isRTL ? "rtl" : "ltr"
+      }`}
+    >
       <div className="max-w-4xl mx-auto px-6 text-center">
         {/* 404 Illustration */}
         <div className="mb-8">
@@ -21,8 +25,10 @@ const Error404: React.FC = () => {
 
         {/* Error Message */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-slate-800 mb-4">{t('error.404')}</h1>
-          <p className="text-xl text-gray-600 mb-8">{t('error.notFound')}</p>
+          <h1 className="text-4xl font-bold text-slate-800 mb-4">
+            {t("error.404")}
+          </h1>
+          <p className="text-xl text-gray-600 mb-8">{t("error.notFound")}</p>
         </div>
 
         {/* Action Buttons */}
@@ -32,42 +38,46 @@ const Error404: React.FC = () => {
             className="bg-yellow-500 text-white px-8 py-3 rounded-lg font-medium hover:bg-yellow-600 transition-colors flex items-center justify-center gap-2"
           >
             <FontAwesomeIcon icon={faHome} />
-            {t('error.goHome')}
+            {t("error.goHome")}
           </NavLink>
-          
+
           <button
             onClick={() => window.history.back()}
             className="border border-slate-300 text-slate-700 px-8 py-3 rounded-lg font-medium hover:bg-slate-50 transition-colors flex items-center justify-center gap-2 cursor-pointer"
           >
             <FontAwesomeIcon icon={faArrowLeft} />
-            {t('error.goBack')}
+            {t("error.goBack")}
           </button>
         </div>
 
         {/* Additional Help */}
-        <div className={`mt-12 p-6 bg-white rounded-lg shadow-lg ${isRTL ? 'text-right' : 'text-left'}`}>
-          <h3 className="text-lg font-semibold text-slate-800 mb-4">{t('error.needHelp')}</h3>
-          <p className="text-gray-600 mb-4">
-            {t('error.helpText')}
-          </p>
+        <div
+          className={`mt-12 mb-2 p-6 bg-white rounded-lg shadow-lg ${
+            isRTL ? "text-right" : "text-left"
+          }`}
+        >
+          <h3 className="text-lg font-semibold text-slate-800 mb-4">
+            {t("error.needHelp")}
+          </h3>
+          <p className="text-gray-600 mb-4">{t("error.helpText")}</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <NavLink
               to="/services"
               className="text-yellow-600 hover:text-yellow-700 font-medium"
             >
-              {t('nav.services')}
+              {t("nav.services")}
             </NavLink>
             <NavLink
               to="/contact"
               className="text-yellow-600 hover:text-yellow-700 font-medium"
             >
-              {t('nav.contact')}
+              {t("nav.contact")}
             </NavLink>
             <NavLink
               to="/about"
               className="text-yellow-600 hover:text-yellow-700 font-medium"
             >
-              {t('nav.about')}
+              {t("nav.about")}
             </NavLink>
           </div>
         </div>

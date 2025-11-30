@@ -41,7 +41,9 @@ const ContactModal: React.FC<ContactModalProps> = ({
       onClose();
     } catch (error: any) {
       console.error(error);
-      toast.error("Failed to update status");
+      toast.error(
+        isRTL ? "فشل تحديث حالة الاتصال" : "Failed to update contact status"
+      );
     } finally {
       setLoading(false);
     }
@@ -122,14 +124,6 @@ const ContactModal: React.FC<ContactModalProps> = ({
                 </span>
               </div>
             </div>
-          </div>
-
-          {/* Subject */}
-          <div>
-            <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">
-              {t("modals.contact.subject")}
-            </label>
-            <p className="text-gray-900 font-medium">{contact.subject}</p>
           </div>
 
           {/* Message Body */}

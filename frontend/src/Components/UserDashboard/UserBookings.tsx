@@ -42,10 +42,13 @@ const UserBookings: React.FC = () => {
 
     try {
       await bookingsAPI.cancel(id);
-      toast.success(t("common.success") || "Booking cancelled successfully");
-      loadMyBookings(); // Reload list
+      toast.success(
+        isRTL ? "تم إلغاء الحجز بنجاح" : "Booking cancelled successfully"
+      );
+      loadMyBookings();
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to cancel booking");
+      console.error("Error cancelling booking", error);
+      toast.error(isRTL ? "فشل إلغاء الحجز" : "Failed to cancel booking");
     }
   };
 
@@ -100,7 +103,7 @@ const UserBookings: React.FC = () => {
                 isRTL ? "border-r-4" : "border-l-4"
               }`}
             >
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8">
                 {/* Service Info */}
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
@@ -141,27 +144,30 @@ const UserBookings: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Car Info */}
-                <div className="bg-gray-50 p-3 rounded-lg min-w-[200px]">
-                  <p className="text-xs text-gray-500 uppercase font-bold mb-1">
-                    {t("appointment.vehicleDetails")}
-                  </p>
-                  <p className="font-medium text-gray-800">
-                    {booking.car.make} {booking.car.model} ({booking.car.year})
-                  </p>
-                </div>
+                <div className="flex justify-start items-center gap-4">
+                  {/* Car Info */}
+                  <div className="bg-gray-50 p-3 rounded-lg min-w-[200px]">
+                    <p className="text-xs text-gray-500 uppercase font-bold mb-1">
+                      {t("appointment.vehicleDetails")}
+                    </p>
+                    <p className="font-medium text-gray-800">
+                      {booking.car.make} {booking.car.model} ({booking.car.year}
+                      )
+                    </p>
+                  </div>
 
-                {/* Actions */}
-                <div>
-                  {booking.status === "pending" && (
-                    <button
-                      onClick={() => handleCancel(booking._id)}
-                      className="text-red-500 hover:text-red-700 hover:bg-red-50 px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
-                    >
-                      <FontAwesomeIcon icon={faTimesCircle} />
-                      {t("common.cancel")}
-                    </button>
-                  )}
+                  {/* Actions */}
+                  <div>
+                    {booking.status === "pending" && (
+                      <button
+                        onClick={() => handleCancel(booking._id)}
+                        className="text-red-500 hover:text-red-700 hover:bg-red-50 px-4 py-2 rounded-lg transition-colors flex items-center gap-2 cursor-pointer"
+                      >
+                        <FontAwesomeIcon icon={faTimesCircle} />
+                        {t("common.cancel")}
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
 
